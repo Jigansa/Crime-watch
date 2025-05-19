@@ -13,6 +13,7 @@ import { toast } from "sonner"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, ShieldCheck } from "lucide-react"
+import { authService } from "@/lib/api-services"
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -32,12 +33,19 @@ const formSchema = z.object({
   }),
 })
 
+type FormValues = {
+  name: string;
+  email: string;
+  password: string;
+  terms: boolean;
+}
+
 export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -47,18 +55,24 @@ export default function SignUpPage() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true)
+  async function onSubmit(values: FormValues) {
+    try {
+      setIsLoading(true)
+      await authService.register({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      })
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log(values)
-      setIsLoading(false)
       toast.success("Account created successfully", {
         description: "Please check your email to verify your account.",
       })
       router.push("/signin")
-    }, 1500)
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to create account")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (

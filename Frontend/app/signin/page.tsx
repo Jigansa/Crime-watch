@@ -13,6 +13,7 @@ import { toast } from "sonner"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, ShieldCheck } from "lucide-react"
+import { authService } from "@/lib/api-services"
 
 const formSchema = z.object({
   email: z.string().email({
@@ -21,15 +22,21 @@ const formSchema = z.object({
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.boolean(),
 })
+
+type FormValues = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
 
 export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -38,16 +45,25 @@ export default function SignInPage() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true)
+  async function onSubmit(values: FormValues) {
+    try {
+      setIsLoading(true)
+      const response = await authService.login(values.email, values.password)
+      
+      // Store the token if remember me is checked
+      if (values.rememberMe) {
+        localStorage.setItem('token', response.token)
+      } else {
+        sessionStorage.setItem('token', response.token)
+      }
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log(values)
-      setIsLoading(false)
       toast.success("Signed in successfully")
       router.push("/")
-    }, 1500)
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to sign in")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
