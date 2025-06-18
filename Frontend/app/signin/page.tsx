@@ -1,5 +1,4 @@
 "use client"
-
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -13,7 +12,7 @@ import { toast } from "sonner"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, ShieldCheck } from "lucide-react"
-import { authService } from "@/lib/api-services"
+import { authService } from "@/lib/auth-service"
 
 const formSchema = z.object({
   email: z.string().email({
@@ -48,7 +47,7 @@ export default function SignInPage() {
   async function onSubmit(values: FormValues) {
     try {
       setIsLoading(true)
-      const response = await authService.login(values.email, values.password)
+      const response = await authService.login({ email: values.email, password: values.password })
       
       // Store the token if remember me is checked
       if (values.rememberMe) {

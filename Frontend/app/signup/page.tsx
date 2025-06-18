@@ -13,7 +13,7 @@ import { toast } from "sonner"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, ShieldCheck } from "lucide-react"
-import { authService } from "@/lib/api-services"
+import { authService } from "@/lib/auth-service"
 
 const formSchema = z.object({
   name: z.string().min(2, {

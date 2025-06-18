@@ -1,61 +1,50 @@
-import api from './api';
+import axios from 'axios';
 
-// Auth services
-export const authService = {
-  login: async (email: string, password: string) => {
-    const response = await api.post('/auth/login', { email, password });
-    return response.data;
-  },
-  register: async (userData: any) => {
-    const response = await api.post('/auth/register', userData);
-    return response.data;
-  },
-};
+const ML_API_URL = 'http://localhost:8000';
 
-// NGO services
-export const ngoService = {
-  getAll: async () => {
-    const response = await api.get('/ngos');
-    return response.data;
-  },
-  getById: async (id: string) => {
-    const response = await api.get(`/ngos/${id}`);
-    return response.data;
-  },
-};
+export interface HotspotData {
+  state: string;
+  latitude: number;
+  longitude: number;
+  risk: 'Low' | 'Medium' | 'High';
+  cluster: number;
+  top_crime: string;
+  crime_color: string;
+  rate_of_crime: number | null;
+  crime_breakdown: Record<string, number>;
+  [key: string]: any; // For year columns
+}
 
-// Campaign services
-export const campaignService = {
-  getAll: async () => {
-    const response = await api.get('/campaigns');
-    return response.data;
-  },
-  getById: async (id: string) => {
-    const response = await api.get(`/campaigns/${id}`);
-    return response.data;
-  },
-};
+export interface TrendData {
+  years: number[];
+  actual_values: number[];
+  predicted_values: number[];
+  trend_direction: 'increasing' | 'decreasing' | 'stable';
+  year_over_year_changes: number[];
+}
 
-// Donation services
-export const donationService = {
-  create: async (donationData: any) => {
-    const response = await api.post('/donations', donationData);
-    return response.data;
-  },
-  getByUser: async () => {
-    const response = await api.get('/donations/user');
-    return response.data;
-  },
-};
+export const mlApi = {
+  async getHotspots(file: File): Promise<HotspotData[]> {
+    const formData = new FormData();
+    formData.append('file', file);
 
-// Event services
-export const eventService = {
-  getAll: async () => {
-    const response = await api.get('/events');
+    const response = await axios.post(`${ML_API_URL}/hotspots-ml`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   },
-  getById: async (id: string) => {
-    const response = await api.get(`/events/${id}`);
+
+  async getCrimeTrend(file: File): Promise<TrendData> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await axios.post(`${ML_API_URL}/crime-trend`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   },
 }; 

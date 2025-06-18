@@ -1,5 +1,4 @@
 "use client"
-
 import Link from "next/link"
 import { ThemeToggle } from "./theme-toggle"
 import { Button } from "@/components/ui/button"
