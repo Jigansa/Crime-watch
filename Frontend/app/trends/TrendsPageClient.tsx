@@ -10,6 +10,8 @@ import { motion } from "framer-motion";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Label, LabelList } from "recharts";
 import { mlApi, HotspotData } from "@/lib/api-services";
 import { DateRange } from "react-day-picker";
+import { Skeleton } from "@/components/ui/skeleton";
+import { BarChart3, PieChart as PieChartIcon, MapPin, LineChart as LineChartIcon } from "lucide-react";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d", "#ffc658"];
 
@@ -194,7 +196,7 @@ export default function TrendsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Card>
+        <Card className="shadow-lg rounded-xl bg-white/90 hover:shadow-2xl transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Date Range</CardTitle>
           </CardHeader>
@@ -202,7 +204,7 @@ export default function TrendsPage() {
             <DatePickerWithRange date={dateRange} setDate={setDateRange} />
           </CardContent>
         </Card>
-        <Card>
+        <Card className="shadow-lg rounded-xl bg-white/90 hover:shadow-2xl transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Crime Type</CardTitle>
           </CardHeader>
@@ -220,7 +222,7 @@ export default function TrendsPage() {
             </Select>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="shadow-lg rounded-xl bg-white/90 hover:shadow-2xl transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Location</CardTitle>
           </CardHeader>
@@ -239,6 +241,8 @@ export default function TrendsPage() {
           </CardContent>
         </Card>
       </motion.div>
+
+      <div className="border-b border-gray-200 mb-6" />
 
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Analysis Results</h2>
@@ -263,187 +267,220 @@ export default function TrendsPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-8">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="by-type">By Crime Type</TabsTrigger>
-          <TabsTrigger value="by-location">By Location</TabsTrigger>
-          <TabsTrigger value="trends-by-type">Trends by Type</TabsTrigger>
-        </TabsList>
+      <div className="sticky top-0 z-10 bg-white/95 pb-2 mb-4 shadow-sm rounded-b-xl">
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-4">
+            <TabsTrigger value="overview"><LineChartIcon className="inline mr-1 w-4 h-4" />Overview</TabsTrigger>
+            <TabsTrigger value="by-type"><PieChartIcon className="inline mr-1 w-4 h-4" />By Crime Type</TabsTrigger>
+            <TabsTrigger value="by-location"><MapPin className="inline mr-1 w-4 h-4" />By Location</TabsTrigger>
+            <TabsTrigger value="trends-by-type"><BarChart3 className="inline mr-1 w-4 h-4" />Trends by Type</TabsTrigger>
+          </TabsList>
 
-        {/* Overview Tab: Yearly Trend */}
-        <TabsContent value="overview">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Crime Trends Over Time</CardTitle>
-                  <CardDescription>Yearly total crime incidents (actual & predicted)</CardDescription>
-                </CardHeader>
-                <CardContent className="mb-8">
-                  <div className="h-[350px]">
-                    <ResponsiveContainer width="100%" height={350}>
-                      <LineChart data={mergedTrendData} margin={{ top: 20, right: 30, left: 60, bottom: 40 }}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="year">
-                          <Label value="Year" offset={-5} position="insideBottom" />
-                        </XAxis>
-                        <YAxis tickFormatter={(v: number) => v.toLocaleString()} width={80}>
-                          <Label value="Incidents" angle={-90} position="insideLeft" offset={10} />
-                        </YAxis>
-                        <Tooltip formatter={(v: number) => v?.toLocaleString?.() ?? v} />
-                        <Legend />
-                        <Line type="monotone" dataKey="total_crimes" stroke="#8884d8" name="Actual" connectNulls dot />
-                        <Line type="monotone" dataKey="predicted_total_crimes" stroke="#82ca9d" name="Predicted" strokeDasharray="5 5" connectNulls dot />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+          {/* Overview Tab: Yearly Trend */}
+          <TabsContent value="overview">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+                <Card className="shadow-lg rounded-xl bg-white/95 hover:shadow-2xl transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold">Crime Trends Over Time</CardTitle>
+                    <CardDescription>Yearly total crime incidents (actual & predicted)</CardDescription>
+                  </CardHeader>
+                  <CardContent className="mb-8">
+                    <div className="h-[350px]">
+                      {trendLoading ? (
+                        <Skeleton className="w-full h-full rounded-lg" />
+                      ) : (
+                        <ResponsiveContainer width="100%" height={350}>
+                          <LineChart data={mergedTrendData} margin={{ top: 20, right: 30, left: 60, bottom: 40 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                            <XAxis dataKey="year">
+                              <Label value="Year" offset={-5} position="insideBottom" />
+                            </XAxis>
+                            <YAxis tickFormatter={(v: number) => v.toLocaleString()} width={80}>
+                              <Label value="Incidents" angle={-90} position="insideLeft" offset={10} />
+                            </YAxis>
+                            <Tooltip formatter={(v: number) => v?.toLocaleString?.() ?? v} contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0001' }} />
+                            <Legend />
+                            <Line type="monotone" dataKey="total_crimes" stroke="#6366f1" name="Actual" connectNulls dot />
+                            <Line type="monotone" dataKey="predicted_total_crimes" stroke="#22d3ee" name="Predicted" strokeDasharray="5 5" connectNulls dot />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <Card>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <Card className="shadow-lg rounded-xl bg-white/95 hover:shadow-2xl transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold">Crime Distribution by Type</CardTitle>
+                    <CardDescription>Percentage breakdown of reported incidents</CardDescription>
+                  </CardHeader>
+                  <CardContent className="mb-8">
+                    <div style={{ width: 400, height: 350, margin: "0 auto", background: "#fff", border: "1px dashed #e5e7eb", borderRadius: "12px", padding: 16 }}>
+                      {hotspotLoading ? (
+                        <Skeleton className="w-full h-full rounded-lg" />
+                      ) : pieChartData.length === 0 ? (
+                        <div className="flex items-center justify-center h-full text-muted-foreground">No data available</div>
+                      ) : (
+                        <PieChart width={400} height={350}>
+                          <Pie
+                            data={pieChartData}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={70}
+                            outerRadius={120}
+                            fill="#6366f1"
+                          >
+                            {pieChartData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip
+                            formatter={(v: number, name: string, props: any) => [v?.toLocaleString?.() ?? v, pieChartData[props?.payload?.index]?.name]}
+                            contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0001' }}
+                          />
+                        </PieChart>
+                      )}
+                    </div>
+                    {pieChartData.length > 0 && (
+                      <div className="flex flex-wrap justify-center gap-4 mt-4">
+                        {pieChartData.map((entry, idx) => (
+                          <div key={entry.name} className="flex items-center gap-2 text-sm max-w-xs truncate">
+                            <span className="inline-block w-3 h-3 rounded-full" style={{ background: COLORS[idx % COLORS.length] }} />
+                            <span className="font-medium truncate max-w-[120px]" title={entry.name}>{entry.name}</span>
+                            <span className="text-muted-foreground">({entry.value.toLocaleString()})</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
+          </TabsContent>
+
+          {/* By Crime Type Tab: Bar Chart */}
+          <TabsContent value="by-type">
+            <div className="grid grid-cols-1 gap-6">
+              <Card className="shadow-lg rounded-xl bg-white/95 hover:shadow-2xl transition-shadow">
                 <CardHeader>
-                  <CardTitle>Crime Distribution by Type</CardTitle>
-                  <CardDescription>Percentage breakdown of reported incidents</CardDescription>
+                  <CardTitle className="text-lg font-semibold">Crime Incidents by Type</CardTitle>
+                  <CardDescription>Total number of incidents reported for each crime type</CardDescription>
                 </CardHeader>
-                <CardContent className="mb-8">
-                  <div style={{ width: 400, height: 350, margin: "0 auto", background: "#fff", border: "1px dashed #ccc", borderRadius: "8px", padding: 16 }}>
-                    {pieChartData.length === 0 ? (
-                      <div className="flex items-center justify-center h-full text-muted-foreground">No data available</div>
+                <CardContent className="mb-8" style={{ background: '#fff', border: '1px dashed #e5e7eb', borderRadius: 12, padding: 16 }}>
+                  <div className="h-[400px]">
+                    {hotspotLoading ? (
+                      <Skeleton className="w-full h-full rounded-lg" />
                     ) : (
-                      <PieChart width={400} height={350}>
-                        <Pie
-                          data={pieChartData}
-                          dataKey="value"
-                          nameKey="name"
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={120}
-                          fill="#8884d8"
-                          label={({ name, percent, value }) => `${name}: ${(percent * 100).toFixed(1)}% (${value.toLocaleString()})`}
-                        >
-                          {pieChartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip formatter={(v: number) => v?.toLocaleString?.() ?? v} />
-                        <Legend />
-                      </PieChart>
+                      <ResponsiveContainer width="100%" height={400}>
+                        <BarChart data={crimeByTypeData} margin={{ top: 20, right: 30, left: 0, bottom: 40 }} barSize={40}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                          <XAxis dataKey="name" angle={-20} textAnchor="end">
+                            <Label value="Crime Type" offset={-5} position="insideBottom" />
+                          </XAxis>
+                          <YAxis tickFormatter={(v: number) => v.toLocaleString()} width={80}>
+                            <Label value="Incidents" angle={-90} position="insideLeft" />
+                          </YAxis>
+                          <Tooltip formatter={(v: number) => v?.toLocaleString?.() ?? v} contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0001' }} />
+                          <Legend />
+                          <Bar dataKey="value" fill="#6366f1">
+                            {crimeByTypeData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                            <LabelList dataKey="value" position="top" formatter={(v: number) => v.toLocaleString()} />
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
                     )}
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
-          </div>
-        </TabsContent>
+            </div>
+          </TabsContent>
 
-        {/* By Crime Type Tab: Bar Chart */}
-        <TabsContent value="by-type">
-          <div className="grid grid-cols-1 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Crime Incidents by Type</CardTitle>
-                <CardDescription>Total number of incidents reported for each crime type</CardDescription>
-              </CardHeader>
-              <CardContent className="mb-8" style={{ background: '#fff', border: '1px dashed #ccc', borderRadius: 8, padding: 16 }}>
-                <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height={400}>
-                    <BarChart data={crimeByTypeData} margin={{ top: 20, right: 30, left: 0, bottom: 40 }} barSize={40}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" angle={-20} textAnchor="end">
-                        <Label value="Crime Type" offset={-5} position="insideBottom" />
-                      </XAxis>
-                      <YAxis tickFormatter={(v: number) => v.toLocaleString()} width={80}>
-                        <Label value="Incidents" angle={-90} position="insideLeft" />
-                      </YAxis>
-                      <Tooltip formatter={(v: number) => v?.toLocaleString?.() ?? v} />
-                      <Legend />
-                      <Bar dataKey="value" fill="#8884d8">
-                        {crimeByTypeData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                        <LabelList dataKey="value" position="top" formatter={(v: number) => v.toLocaleString()} />
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        {/* By Location Tab: Bar Chart */}
-        <TabsContent value="by-location">
-          <div className="grid grid-cols-1 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Crime by Location</CardTitle>
-                <CardDescription>Comparison of total crime incidents across states</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height={400}>
-                    <BarChart data={crimeByLocationData} layout="vertical" margin={{ top: 20, right: 30, left: 0, bottom: 40 }}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number">
-                        <Label value="Incidents" angle={-90} position="insideLeft" />
-                      </XAxis>
-                      <YAxis dataKey="name" type="category" width={100}>
-                        <Label value="Location" offset={5} position="insideBottom" />
-                      </YAxis>
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="total" fill="#82ca9d">
-                        {crimeByLocationData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        {/* Trends by Type Tab: Line Chart for Each Type */}
-        <TabsContent value="trends-by-type">
-          <div className="grid grid-cols-1 gap-6">
-            {allCrimeTypes.map((type, idx) => (
-              <Card key={type}>
+          {/* By Location Tab: Bar Chart */}
+          <TabsContent value="by-location">
+            <div className="grid grid-cols-1 gap-6">
+              <Card className="shadow-lg rounded-xl bg-white/95 hover:shadow-2xl transition-shadow">
                 <CardHeader>
-                  <CardTitle>Trend: {type}</CardTitle>
-                  <CardDescription>Yearly trend for {type}</CardDescription>
+                  <CardTitle className="text-lg font-semibold">Crime by Location</CardTitle>
+                  <CardDescription>Comparison of total crime incidents across states</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-[300px]">
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={trendsByType[type]} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="year">
-                          <Label value="Year" offset={-5} position="insideBottom" />
-                        </XAxis>
-                        <YAxis tickFormatter={(v: number) => v.toLocaleString()}>
-                          <Label value="Incidents" angle={-90} position="insideLeft" />
-                        </YAxis>
-                        <Tooltip formatter={(v: number) => v.toLocaleString()} />
-                        <Legend />
-                        <Line type="monotone" dataKey="value" stroke={COLORS[idx % COLORS.length]} name={type} />
-                      </LineChart>
-                    </ResponsiveContainer>
+                  <div className="h-[400px]">
+                    {hotspotLoading ? (
+                      <Skeleton className="w-full h-full rounded-lg" />
+                    ) : (
+                      <ResponsiveContainer width="100%" height={400}>
+                        <BarChart data={crimeByLocationData} layout="vertical" margin={{ top: 20, right: 30, left: 0, bottom: 40 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                          <XAxis type="number">
+                            <Label value="Incidents" angle={-90} position="insideLeft" />
+                          </XAxis>
+                          <YAxis dataKey="name" type="category" width={100}>
+                            <Label value="Location" offset={5} position="insideBottom" />
+                          </YAxis>
+                          <Tooltip contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0001' }} />
+                          <Legend />
+                          <Bar dataKey="total" fill="#22d3ee">
+                            {crimeByLocationData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    )}
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+            </div>
+          </TabsContent>
+
+          {/* Trends by Type Tab: Line Chart for Each Type */}
+          <TabsContent value="trends-by-type">
+            <div className="grid grid-cols-1 gap-6">
+              {allCrimeTypes.map((type, idx) => (
+                <Card key={type} className="shadow-lg rounded-xl bg-white/95 hover:shadow-2xl transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold">Trend: {type}</CardTitle>
+                    <CardDescription>Yearly trend for {type}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[300px]">
+                      {hotspotLoading ? (
+                        <Skeleton className="w-full h-full rounded-lg" />
+                      ) : (
+                        <ResponsiveContainer width="100%" height={300}>
+                          <LineChart data={trendsByType[type]} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                            <XAxis dataKey="year">
+                              <Label value="Year" offset={-5} position="insideBottom" />
+                            </XAxis>
+                            <YAxis tickFormatter={(v: number) => v.toLocaleString()}>
+                              <Label value="Incidents" angle={-90} position="insideLeft" />
+                            </YAxis>
+                            <Tooltip formatter={(v: number) => v.toLocaleString()} contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0001' }} />
+                            <Legend />
+                            <Line type="monotone" dataKey="value" stroke={COLORS[idx % COLORS.length]} name={type} />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 } 
