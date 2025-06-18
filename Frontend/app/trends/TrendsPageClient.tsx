@@ -196,17 +196,17 @@ export default function TrendsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Card className="shadow-lg rounded-xl bg-white/90 hover:shadow-2xl transition-shadow">
+        <Card className="shadow-lg rounded-xl bg-white/90 dark:bg-zinc-900/90 hover:shadow-2xl transition-shadow border border-zinc-200 dark:border-zinc-800">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Date Range</CardTitle>
+            <CardTitle className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Date Range</CardTitle>
           </CardHeader>
           <CardContent>
             <DatePickerWithRange date={dateRange} setDate={setDateRange} />
           </CardContent>
         </Card>
-        <Card className="shadow-lg rounded-xl bg-white/90 hover:shadow-2xl transition-shadow">
+        <Card className="shadow-lg rounded-xl bg-white/90 dark:bg-zinc-900/90 hover:shadow-2xl transition-shadow border border-zinc-200 dark:border-zinc-800">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Crime Type</CardTitle>
+            <CardTitle className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Crime Type</CardTitle>
           </CardHeader>
           <CardContent>
             <Select defaultValue={crimeType} onValueChange={setCrimeType}>
@@ -222,9 +222,9 @@ export default function TrendsPage() {
             </Select>
           </CardContent>
         </Card>
-        <Card className="shadow-lg rounded-xl bg-white/90 hover:shadow-2xl transition-shadow">
+        <Card className="shadow-lg rounded-xl bg-white/90 dark:bg-zinc-900/90 hover:shadow-2xl transition-shadow border border-zinc-200 dark:border-zinc-800">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Location</CardTitle>
+            <CardTitle className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Location</CardTitle>
           </CardHeader>
           <CardContent>
             <Select defaultValue={location} onValueChange={setLocation}>
@@ -242,12 +242,12 @@ export default function TrendsPage() {
         </Card>
       </motion.div>
 
-      <div className="border-b border-gray-200 mb-6" />
+      <div className="border-b border-gray-200 dark:border-zinc-800 mb-6" />
 
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Analysis Results</h2>
+        <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Analysis Results</h2>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={refreshData} disabled={isLoading}>
+          <Button variant="outline" size="sm" onClick={refreshData} disabled={isLoading} className="dark:bg-zinc-800 dark:text-zinc-100 dark:border-zinc-700">
             {isLoading ? (
               <>
                 <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
@@ -260,30 +260,30 @@ export default function TrendsPage() {
               </>
             )}
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="dark:bg-zinc-800 dark:text-zinc-100 dark:border-zinc-700">
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
         </div>
       </div>
 
-      <div className="sticky top-0 z-10 bg-white/95 pb-2 mb-4 shadow-sm rounded-b-xl">
+      <div className="sticky top-0 z-10 bg-white/95 dark:bg-zinc-900/95 pb-2 mb-4 shadow-sm rounded-b-xl">
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-4">
-            <TabsTrigger value="overview"><LineChartIcon className="inline mr-1 w-4 h-4" />Overview</TabsTrigger>
-            <TabsTrigger value="by-type"><PieChartIcon className="inline mr-1 w-4 h-4" />By Crime Type</TabsTrigger>
-            <TabsTrigger value="by-location"><MapPin className="inline mr-1 w-4 h-4" />By Location</TabsTrigger>
-            <TabsTrigger value="trends-by-type"><BarChart3 className="inline mr-1 w-4 h-4" />Trends by Type</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 mb-4 bg-zinc-100 dark:bg-zinc-800 rounded-xl">
+            <TabsTrigger value="overview" className="dark:text-zinc-100"><LineChartIcon className="inline mr-1 w-4 h-4" />Overview</TabsTrigger>
+            <TabsTrigger value="by-type" className="dark:text-zinc-100"><PieChartIcon className="inline mr-1 w-4 h-4" />By Crime Type</TabsTrigger>
+            <TabsTrigger value="by-location" className="dark:text-zinc-100"><MapPin className="inline mr-1 w-4 h-4" />By Location</TabsTrigger>
+            <TabsTrigger value="trends-by-type" className="dark:text-zinc-100"><BarChart3 className="inline mr-1 w-4 h-4" />Trends by Type</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab: Yearly Trend */}
           <TabsContent value="overview">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-                <Card className="shadow-lg rounded-xl bg-white/95 hover:shadow-2xl transition-shadow">
+                <Card className="shadow-lg rounded-xl bg-white/95 dark:bg-zinc-900/95 hover:shadow-2xl transition-shadow border border-zinc-200 dark:border-zinc-800">
                   <CardHeader>
-                    <CardTitle className="text-lg font-semibold">Crime Trends Over Time</CardTitle>
-                    <CardDescription>Yearly total crime incidents (actual & predicted)</CardDescription>
+                    <CardTitle className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Crime Trends Over Time</CardTitle>
+                    <CardDescription className="text-zinc-500 dark:text-zinc-400">Yearly total crime incidents (actual & predicted)</CardDescription>
                   </CardHeader>
                   <CardContent className="mb-8">
                     <div className="h-[350px]">
@@ -292,15 +292,18 @@ export default function TrendsPage() {
                       ) : (
                         <ResponsiveContainer width="100%" height={350}>
                           <LineChart data={mergedTrendData} margin={{ top: 20, right: 30, left: 60, bottom: 40 }}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                            <XAxis dataKey="year">
-                              <Label value="Year" offset={-5} position="insideBottom" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:stroke-zinc-700" />
+                            <XAxis dataKey="year" stroke="#222" tick={{ fill: '#222' }} tickLine={{ stroke: '#222' }}
+                              axisLine={{ stroke: '#222' }}
+                              className="dark:stroke-zinc-300"
+                            >
+                              <Label value="Year" offset={-5} position="insideBottom" className="fill-zinc-700 dark:fill-zinc-300" />
                             </XAxis>
-                            <YAxis tickFormatter={(v: number) => v.toLocaleString()} width={80}>
-                              <Label value="Incidents" angle={-90} position="insideLeft" offset={10} />
+                            <YAxis tickFormatter={(v: number) => v.toLocaleString()} width={80} stroke="#222" tick={{ fill: '#222' }} tickLine={{ stroke: '#222' }} axisLine={{ stroke: '#222' }} className="dark:stroke-zinc-300">
+                              <Label value="Incidents" angle={-90} position="insideLeft" offset={10} className="fill-zinc-700 dark:fill-zinc-300" />
                             </YAxis>
-                            <Tooltip formatter={(v: number) => v?.toLocaleString?.() ?? v} contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0001' }} />
-                            <Legend />
+                            <Tooltip formatter={(v: number) => v?.toLocaleString?.() ?? v} contentStyle={{ background: '#18181b', color: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0008', border: '1px solid #333' }} labelStyle={{ color: '#fff' }} itemStyle={{ color: '#fff' }} wrapperStyle={{ zIndex: 50 }} />
+                            <Legend wrapperStyle={{ color: '#222', fontWeight: 500 }} />
                             <Line type="monotone" dataKey="total_crimes" stroke="#6366f1" name="Actual" connectNulls dot />
                             <Line type="monotone" dataKey="predicted_total_crimes" stroke="#22d3ee" name="Predicted" strokeDasharray="5 5" connectNulls dot />
                           </LineChart>
@@ -316,13 +319,13 @@ export default function TrendsPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <Card className="shadow-lg rounded-xl bg-white/95 hover:shadow-2xl transition-shadow">
+                <Card className="shadow-lg rounded-xl bg-white/95 dark:bg-zinc-900/95 hover:shadow-2xl transition-shadow border border-zinc-200 dark:border-zinc-800">
                   <CardHeader>
-                    <CardTitle className="text-lg font-semibold">Crime Distribution by Type</CardTitle>
-                    <CardDescription>Percentage breakdown of reported incidents</CardDescription>
+                    <CardTitle className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Crime Distribution by Type</CardTitle>
+                    <CardDescription className="text-zinc-500 dark:text-zinc-400">Percentage breakdown of reported incidents</CardDescription>
                   </CardHeader>
                   <CardContent className="mb-8">
-                    <div style={{ width: 400, height: 350, margin: "0 auto", background: "#fff", border: "1px dashed #e5e7eb", borderRadius: "12px", padding: 16 }}>
+                    <div style={{ width: 400, height: 350, margin: "0 auto", border: "1px dashed #e5e7eb", borderRadius: "12px", padding: 16 }} className="dark:border-zinc-700">
                       {hotspotLoading ? (
                         <Skeleton className="w-full h-full rounded-lg" />
                       ) : pieChartData.length === 0 ? (
@@ -345,7 +348,10 @@ export default function TrendsPage() {
                           </Pie>
                           <Tooltip
                             formatter={(v: number, name: string, props: any) => [v?.toLocaleString?.() ?? v, pieChartData[props?.payload?.index]?.name]}
-                            contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0001' }}
+                            contentStyle={{ background: '#18181b', color: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0008', border: '1px solid #333' }}
+                            labelStyle={{ color: '#fff' }}
+                            itemStyle={{ color: '#fff' }}
+                            wrapperStyle={{ zIndex: 50 }}
                           />
                         </PieChart>
                       )}
@@ -355,8 +361,8 @@ export default function TrendsPage() {
                         {pieChartData.map((entry, idx) => (
                           <div key={entry.name} className="flex items-center gap-2 text-sm max-w-xs truncate">
                             <span className="inline-block w-3 h-3 rounded-full" style={{ background: COLORS[idx % COLORS.length] }} />
-                            <span className="font-medium truncate max-w-[120px]" title={entry.name}>{entry.name}</span>
-                            <span className="text-muted-foreground">({entry.value.toLocaleString()})</span>
+                            <span className="font-medium truncate max-w-[120px] text-zinc-900 dark:text-zinc-100" title={entry.name}>{entry.name}</span>
+                            <span className="text-muted-foreground dark:text-zinc-400">({entry.value.toLocaleString()})</span>
                           </div>
                         ))}
                       </div>
@@ -370,10 +376,10 @@ export default function TrendsPage() {
           {/* By Crime Type Tab: Bar Chart */}
           <TabsContent value="by-type">
             <div className="grid grid-cols-1 gap-6">
-              <Card className="shadow-lg rounded-xl bg-white/95 hover:shadow-2xl transition-shadow">
+              <Card className="shadow-lg rounded-xl bg-white/95 dark:bg-zinc-900/95 hover:shadow-2xl transition-shadow border border-zinc-200 dark:border-zinc-800">
                 <CardHeader>
-                  <CardTitle className="text-lg font-semibold">Crime Incidents by Type</CardTitle>
-                  <CardDescription>Total number of incidents reported for each crime type</CardDescription>
+                  <CardTitle className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Crime Incidents by Type</CardTitle>
+                  <CardDescription className="text-zinc-500 dark:text-zinc-400">Total number of incidents reported for each crime type</CardDescription>
                 </CardHeader>
                 <CardContent className="mb-8" style={{ background: '#fff', border: '1px dashed #e5e7eb', borderRadius: 12, padding: 16 }}>
                   <div className="h-[400px]">
@@ -409,10 +415,10 @@ export default function TrendsPage() {
           {/* By Location Tab: Bar Chart */}
           <TabsContent value="by-location">
             <div className="grid grid-cols-1 gap-6">
-              <Card className="shadow-lg rounded-xl bg-white/95 hover:shadow-2xl transition-shadow">
+              <Card className="shadow-lg rounded-xl bg-white/95 dark:bg-zinc-900/95 hover:shadow-2xl transition-shadow border border-zinc-200 dark:border-zinc-800">
                 <CardHeader>
-                  <CardTitle className="text-lg font-semibold">Crime by Location</CardTitle>
-                  <CardDescription>Comparison of total crime incidents across states</CardDescription>
+                  <CardTitle className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Crime by Location</CardTitle>
+                  <CardDescription className="text-zinc-500 dark:text-zinc-400">Comparison of total crime incidents across states</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[400px]">
@@ -448,10 +454,10 @@ export default function TrendsPage() {
           <TabsContent value="trends-by-type">
             <div className="grid grid-cols-1 gap-6">
               {allCrimeTypes.map((type, idx) => (
-                <Card key={type} className="shadow-lg rounded-xl bg-white/95 hover:shadow-2xl transition-shadow">
+                <Card key={type} className="shadow-lg rounded-xl bg-white/95 dark:bg-zinc-900/95 hover:shadow-2xl transition-shadow border border-zinc-200 dark:border-zinc-800">
                   <CardHeader>
-                    <CardTitle className="text-lg font-semibold">Trend: {type}</CardTitle>
-                    <CardDescription>Yearly trend for {type}</CardDescription>
+                    <CardTitle className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Trend: {type}</CardTitle>
+                    <CardDescription className="text-zinc-500 dark:text-zinc-400">Yearly trend for {type}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="h-[300px]">
